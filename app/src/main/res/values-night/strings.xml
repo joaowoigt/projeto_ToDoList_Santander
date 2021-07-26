@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tasks">Tarefas</string>
+    <string name="title">Título</string>
+    <string name="description">Descrição</string>
+    <string name="date">Data</string>
+    <string name="time">Horario</string>
+    <string name="create_task">Criar Tarefa</string>
+    <string name="cancel">Cancelar</string>
+    <string name="exclude">Excluir</string>
+    <string name="back">Voltar</string>
+    <string name="edit">Editar</string>
+    <string name="detail">Detalhes</string>
+    <string name="empty_state_text">Ops! Você não tem nenhuma tarefa</string>
+</resources>
