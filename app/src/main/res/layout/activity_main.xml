@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.MainActivity">
+    tools:context=".ui.MainActivity">
 
     <ImageView
         android:id="@+id/iv_logo"
@@ -19,7 +19,7 @@
     <include
         android:id="@+id/include_empty"
         layout="@layout/empty_state"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="gone"/>
 
 

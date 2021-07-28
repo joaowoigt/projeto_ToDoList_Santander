@@ -22,16 +22,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/bt_detail"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/checkbox"/>
-
             <TextView
                 android:id="@+id/tv_task_title"
                 android:layout_width="wrap_content"
@@ -78,11 +68,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@id/card_border"
-                app:layout_constraintEnd_toStartOf="@id/ib_more"
+                app:layout_constraintEnd_toStartOf="@id/bt_detail"
                 app:layout_constraintBottom_toBottomOf="@id/card_border" />
 
             <ImageButton
-                android:id="@+id/ib_more"
+                android:id="@+id/bt_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_baseline_more_vert_24"
@@ -91,6 +81,30 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/detail" />
+
+            <ImageButton
+                android:id="@+id/bt_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_edit_24"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toStartOf="@id/checkbox"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="8dp"
+                android:contentDescription="@string/edit" />
+
+            <ImageButton
+                android:id="@+id/bt_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toStartOf="@id/bt_edit"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="8dp"/>
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

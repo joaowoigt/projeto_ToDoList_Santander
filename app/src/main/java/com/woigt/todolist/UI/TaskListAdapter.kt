@@ -1,101 +1,57 @@
-package com.woigt.todolist.UI
+package com.woigt.todolist.ui
 
-import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.woigt.todolist.R
-import com.woigt.todolist.databinding.ItemTaskBinding
-import com.woigt.todolist.model.Task
+import com.woigt.todolist.localdata.Task
 
-
-class TaskListAdapter()
-    : ListAdapter<Task,TaskListAdapter.TaskViewHolder>(DiffCallback()) {
-
-    var listenerDetail: (Task) -> Unit = {}
-    var listenerEdit: (Task) -> Unit = {}
-    var listenerCheckBox: (Task) -> Unit = {}
+class TaskListAdapter :
+    ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemTaskBinding.inflate(inflater, parent, false)
-        return TaskViewHolder(binding)
+        return TaskViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.bind(item)
     }
 
+    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val taskTitle: TextView = itemView.findViewById(R.id.tv_task_title)
+        private val taskDescription: TextView = itemView.findViewById(R.id.tv_task_description)
+        private val taskDate: TextView = itemView.findViewById(R.id.tv_task_date)
+        private val taskTime: TextView = itemView.findViewById(R.id.tv_task_time)
 
-    inner class TaskViewHolder(
-        private val binding: ItemTaskBinding,
-
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Task) {
-            binding.tvTaskTitle.text = item.title
-            binding.tvTaskDescription.text = item.description
-            binding.tvTaskDate.text = item.date
-            binding.tvTaskTime.text = item.time
-            binding.btDetail.setOnClickListener {
-                showPopup(item)
-            }
-            binding.checkbox.setOnClickListener {
-                if (!item.completed) {
-                    item.completed = true
-                    setStyle(item)
-                } else {
-                    item.completed = false
-                    setStyle(item)
-                }
-
-            }
-
-
+        fun bind( item: Task) {
+            taskTitle.text = item.title
+            taskDescription.text = item.description
+            taskDate.text = item.date
+            taskTime.text = item.time
         }
 
-        private fun setStyle(item: Task) {
-            if (item.completed) {
-                binding.tvTaskTitle.paintFlags = binding.tvTaskTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                binding.tvTaskDescription.paintFlags = binding.tvTaskDescription.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                binding.tvTaskDate.paintFlags = binding.tvTaskDate.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                binding.tvTaskTime.paintFlags = binding.tvTaskTime.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                binding.tvTaskTitle.paintFlags = binding.tvTaskTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                binding.tvTaskDescription.paintFlags = binding.tvTaskDescription.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                binding.tvTaskDate.paintFlags = binding.tvTaskDate.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                binding.tvTaskTime.paintFlags = binding.tvTaskTime.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-
+        companion object {
+            fun create(parent: ViewGroup): TaskViewHolder {
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_task, parent, false)
+                return TaskViewHolder(view)
             }
         }
-
-        private fun showPopup(item: Task) {
-            val detail = binding.btDetail
-            val popupMenu = PopupMenu(detail.context, detail)
-            popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener {
-                when( it.itemId) {
-                    R.id.detail -> listenerDetail(item)
-                    R.id.edit -> listenerEdit(item)
-            }
-                return@setOnMenuItemClickListener true
-            }
-            popupMenu.show()
-
-        }
-
-        }
-
-        }
-
-
-
-
-
-    class DiffCallback : DiffUtil.ItemCallback<Task>() {
-        override fun areItemsTheSame(oldItem: Task, newItem: Task) = oldItem == newItem
-        override fun areContentsTheSame(oldItem: Task, newItem: Task) = oldItem.id == newItem.id
     }
 
+    class TaskComparator : DiffUtil.ItemCallback<Task>(){
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.title == newItem.title
+        }
+
+    }
+}

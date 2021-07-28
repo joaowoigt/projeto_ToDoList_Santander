@@ -1,22 +1,29 @@
-package com.woigt.todolist.UI
+package com.woigt.todolist.ui
 
-import android.content.Context
-import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 
 import androidx.appcompat.app.AppCompatActivity
 import com.woigt.todolist.R
-import com.woigt.todolist.UI.AddTaskActivity.Companion.TASK_ID
+import com.woigt.todolist.database.TaskProvider.Companion.URI_TASKS
+import com.woigt.todolist.database.TasksDatabaseHelper.Companion.DATE_TASK
+import com.woigt.todolist.database.TasksDatabaseHelper.Companion.DESCRIPTION_TASK
+import com.woigt.todolist.database.TasksDatabaseHelper.Companion.TIME_TASK
+import com.woigt.todolist.database.TasksDatabaseHelper.Companion.TITLE_TASK
+
 import com.woigt.todolist.databinding.ActivityDetailBinding
-import com.woigt.todolist.datasource.TaskDataSource
-import com.woigt.todolist.extensions.text
-import com.woigt.todolist.model.Task
+
+import com.woigt.todolist.localdata.Task
+import com.woigt.todolist.ui.MainActivity.Companion.EXTRA_ID
 import kotlinx.android.synthetic.main.activity_detail.*
 
-class DetailActivity: AppCompatActivity() {
+class DetailActivity(): AppCompatActivity() {
 
+    private var id: Long = 0
+
+    private var mCursor: Cursor? = null
     private  var task: Task? = null
-    private  var taskDataSource: TaskDataSource? = null
 
     lateinit var binding : ActivityDetailBinding
 
@@ -25,37 +32,39 @@ class DetailActivity: AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_detail)
 
-        if (intent.hasExtra(TASK_ID)) {
-            val taskId = intent.getIntExtra(TASK_ID, 0)
-            TaskDataSource.findById(taskId)?.let {
-                tv_detail_title.text = it.title
-                tv_detail_description.text = it.description
-                tv_detail_date.text = it.date
-                tv_detail_time.text = it.time
-            }
+        val id = intent.getLongExtra(EXTRA_ID, 0)
+
+        val uri = Uri.withAppendedPath(URI_TASKS, id.toString())
+        val cursor = contentResolver?.query(uri, null,null, null, null)
+
+        if (cursor?.moveToNext() as Boolean) {
+            tv_detail_title.setText(cursor.getString(cursor.getColumnIndex(TITLE_TASK)))
+            tv_detail_description.setText(cursor.getString(cursor.getColumnIndex(DESCRIPTION_TASK)))
+            tv_detail_date.setText(cursor.getString(cursor.getColumnIndex(DATE_TASK)))
+            tv_detail_time.setText(cursor.getString(cursor.getColumnIndex(TIME_TASK)))
         }
 
 
-
+        cursor.close()
         insertListeners()
+
+
     }
 
 
 
     private fun insertListeners() {
         bt_back.setOnClickListener {
-            taskDataSource?.deleteTask(task)
             finish()
         }
 
-        bt_edit.setOnClickListener {
-            val intent = Intent(this, AddTaskActivity::class.java)
-            intent.putExtra(AddTaskActivity.TASK_ID, it.id)
-            startActivity(intent)
-        }
+
+
         bt_back.setOnClickListener {
             finish()
         }
+
+
     }
 
 
@@ -63,3 +72,4 @@ class DetailActivity: AppCompatActivity() {
 
 
 }
+
