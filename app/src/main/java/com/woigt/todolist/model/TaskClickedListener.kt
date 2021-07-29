@@ -1,10 +1,10 @@
 package com.woigt.todolist.model
 
 import android.database.Cursor
+import com.woigt.todolist.localdata.Task
 
 interface TaskClickedListener {
-    fun taskClickedItem(cursor: Cursor)
-    fun taskRemoveItem(cursor: Cursor?)
-    fun taskEditItem(cursor: Cursor)
+    fun taskClickedItem(task: Task)
+
 
 }

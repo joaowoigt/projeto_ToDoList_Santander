@@ -1,5 +1,6 @@
 package com.woigt.todolist.localdata
 
+import android.content.ClipData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -10,21 +11,18 @@ interface TaskDao {
     @Query("SELECT * FROM task_table")
     fun getTasks(): Flow<List<Task>>
 
-    @Query("SELECT * FROM task_table WHERE entryid = :taskId")
-    suspend fun getTaskById(taskId: String): Task?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: Task)
 
-    @Query("DELETE FROM task_table WHERE entryid = :taskId")
-    suspend fun deleteTaskById(taskId: String): Int
-
-    @Query("UPDATE task_table SET completed = :completed WHERE entryid = :taskId")
-    suspend fun updateCompleted(taskId: String, completed: Boolean)
-
     @Update
-    suspend fun updateTask(task: Task): Int
+    suspend fun update(task: Task)
 
-    @Query("DELETE FROM task_table WHERE completed = 1")
-    suspend fun deleteCompletedTasks(): Int
+    @Delete
+    suspend fun delete(task: Task)
+
+    @Query("SELECT * from task_table WHERE id = :id")
+    fun getItem(id: Int): Flow<Task>
+
+
+
 }

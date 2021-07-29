@@ -2,26 +2,17 @@ package com.woigt.todolist.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.BaseColumns._ID
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.CursorLoader
-import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.woigt.todolist.R
-import com.woigt.todolist.database.TaskProvider.Companion.URI_TASKS
-import com.woigt.todolist.database.TasksDatabaseHelper.Companion.TITLE_TASK
 import com.woigt.todolist.databinding.ActivityMainBinding
 import com.woigt.todolist.localdata.Task
 import com.woigt.todolist.localdata.TaskApplication
-import com.woigt.todolist.model.TaskClickedListener
 import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_COMPLETED
 import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_DATE
 import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_DESCRIPTION
@@ -35,9 +26,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val taskViewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory((application as TaskApplication).repository)
+        TaskViewModelFactory((application as TaskApplication).database.taskDao())
     }
     private val newTaskActivityRequestCode = 1
+    private val detailTaskActivityRequestCode = 2
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +39,11 @@ class MainActivity : AppCompatActivity() {
 
 
         val recyclerView = findViewById<RecyclerView>(R.id.rv_tasks)
-        val adapter = TaskListAdapter()
+        val adapter = TaskListAdapter{
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra("id", it.id)
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -64,9 +60,9 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == newTaskActivityRequestCode && resultCode == Activity.RESULT_OK) {
             data?.extras?.let {
                 val task = Task(it.getString(EXTRA_TITLE),
-                it.getString(EXTRA_DESCRIPTION), it.getString(EXTRA_DATE), it.getString(EXTRA_TIME),
-                it.getBoolean(EXTRA_COMPLETED))
-                taskViewModel.insert(task)
+                it.getString(EXTRA_DESCRIPTION), it.getString(EXTRA_DATE),
+                    it.getString(EXTRA_TIME), it.getBoolean(EXTRA_COMPLETED))
+                taskViewModel.insertTask(task)
             }
         } else {
             Toast.makeText(applicationContext,"Não salvo", Toast.LENGTH_LONG).show()
@@ -77,7 +73,9 @@ class MainActivity : AppCompatActivity() {
         binding.btNewTodo.setOnClickListener {
             val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
             startActivityForResult(intent, newTaskActivityRequestCode)
+
         }
+
 
         binding.includeEmpty.btNewTodoEmpty.setOnClickListener {
             startActivity(Intent(this, AddTaskActivity::class.java))
@@ -87,8 +85,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
     companion object {
-        const val EXTRA_ID = "id"
+        const val EXTRA_ID = 1000
     }
 
 

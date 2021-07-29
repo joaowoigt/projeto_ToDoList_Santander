@@ -1,25 +1,41 @@
 package com.woigt.todolist.ui
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.woigt.todolist.R
+import com.woigt.todolist.databinding.ItemTaskBinding
 import com.woigt.todolist.localdata.Task
+import com.woigt.todolist.model.TaskClickedListener
+import kotlin.coroutines.coroutineContext
 
-class TaskListAdapter :
+class TaskListAdapter(val onItemClicked: (Task) -> Unit) :
     ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskComparator()) {
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        return TaskViewHolder.create(parent)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
+        return TaskViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+        val current = getItem(position)
+        holder.itemView.setOnClickListener {
+            onItemClicked(current)
+        }
+        holder.bind(current)
     }
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -28,20 +44,17 @@ class TaskListAdapter :
         private val taskDate: TextView = itemView.findViewById(R.id.tv_task_date)
         private val taskTime: TextView = itemView.findViewById(R.id.tv_task_time)
 
+
         fun bind( item: Task) {
             taskTitle.text = item.title
             taskDescription.text = item.description
             taskDate.text = item.date
             taskTime.text = item.time
+
         }
 
-        companion object {
-            fun create(parent: ViewGroup): TaskViewHolder {
-                val view: View = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_task, parent, false)
-                return TaskViewHolder(view)
-            }
-        }
+
+    }
     }
 
     class TaskComparator : DiffUtil.ItemCallback<Task>(){
@@ -54,4 +67,3 @@ class TaskListAdapter :
         }
 
     }
-}

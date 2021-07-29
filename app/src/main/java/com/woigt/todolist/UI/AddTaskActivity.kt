@@ -1,34 +1,31 @@
 package com.woigt.todolist.ui
 
-import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.woigt.todolist.database.TaskProvider.Companion.URI_TASKS
-import com.woigt.todolist.database.TasksDatabaseHelper.Companion.COMPLETED_TASK
-import com.woigt.todolist.database.TasksDatabaseHelper.Companion.DATE_TASK
-import com.woigt.todolist.database.TasksDatabaseHelper.Companion.DESCRIPTION_TASK
-import com.woigt.todolist.database.TasksDatabaseHelper.Companion.TIME_TASK
-import com.woigt.todolist.database.TasksDatabaseHelper.Companion.TITLE_TASK
 import com.woigt.todolist.databinding.ActivityAddTaskBinding
 import com.woigt.todolist.extensions.format
 import com.woigt.todolist.extensions.text
-import com.woigt.todolist.ui.MainActivity.Companion.EXTRA_ID
-import kotlinx.android.synthetic.main.activity_add_task.*
-import kotlinx.android.synthetic.main.activity_detail.*
+import com.woigt.todolist.localdata.Task
+import com.woigt.todolist.localdata.TaskApplication
+import com.woigt.todolist.viewmodel.TaskViewModel
+import com.woigt.todolist.viewmodel.TaskViewModelFactory
 
 import java.util.*
 
-class AddTaskActivity :AppCompatActivity() {
+class AddTaskActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddTaskBinding
+
+    private val taskViewModel: TaskViewModel by viewModels {
+        TaskViewModelFactory((application as TaskApplication).database.taskDao())
+    }
+    lateinit var task: Task
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,43 +33,53 @@ class AddTaskActivity :AppCompatActivity() {
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var newNote = true
-        if (intent.hasExtra(EXTRA_ID)) {
-            bt_create_task.visibility = View.GONE
-            bt_edit_task.visibility = View.VISIBLE
-            val id = intent.getStringExtra(EXTRA_ID)
-
-            val uri = Uri.withAppendedPath(URI_TASKS, id)
-            val cursor = contentResolver?.query(uri, null,null, null, null)
-
-            if (cursor?.moveToNext() as Boolean) {
-                newNote = false
-                binding.inputTitle.text = cursor.getString(cursor.getColumnIndex(TITLE_TASK))
-                binding.inputDescription.text = cursor.getString(cursor.getColumnIndex(DESCRIPTION_TASK))
-                binding.inputDate.text = cursor.getString(cursor.getColumnIndex(DATE_TASK))
-                binding.inputTime.text = cursor.getString(cursor.getColumnIndex(TIME_TASK))
+        fun bindEditTask(task: Task) {
+            binding.apply {
+                binding.inputTitle.text = task.title.toString()
+                binding.inputDescription.text = task.description.toString()
+                binding.inputDate.text = task.date.toString()
+                binding.inputTime.text = task.time.toString()
             }
-
-            bt_edit_task.setOnClickListener {
-                val values = ContentValues()
-                values.put(TITLE_TASK, binding.inputTitle.text.toString())
-                values.put(DESCRIPTION_TASK, binding.inputDescription.text.toString())
-                values.put(DATE_TASK, binding.inputDate.text.toString())
-                values.put(TIME_TASK, binding.inputTime.text.toString())
-                values.put(COMPLETED_TASK, 0)
-                contentResolver.update(uri, values, null, null)
-                finish()
-
-            }
-
-
-            cursor.close()
-
         }
+
+        if (intent.hasExtra("id")) {
+            val id = intent.getIntExtra("id", 0)
+            taskViewModel.retrieveTask(id).observe(this, androidx.lifecycle.Observer {
+                selectedItem -> task = selectedItem
+                bindEditTask(task)
+                binding.btCreateTask.visibility = View.GONE
+                binding.btEditTask.visibility = View.VISIBLE
+                binding.toolbar.title = "Editar Tarefa"
+            })
+        }
+
+
 
         insertListeners()
 
+    }
 
+    private fun isEntryValid(): Boolean {
+        return taskViewModel.isEntryValid(
+            binding.inputTitle.text.toString(),
+            binding.inputDescription.text.toString(),
+            binding.inputDate.text.toString(),
+            binding.inputTime.text.toString()
+        )
+
+    }
+
+    private fun addNewItem() {
+        if (isEntryValid()) {
+            taskViewModel.addNewTask(
+                binding.inputTitle.text.toString(),
+                binding.inputDescription.text.toString(),
+                binding.inputDate.text.toString(),
+                binding.inputTime.text.toString()
+            )
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun insertListeners() {
@@ -112,24 +119,17 @@ class AddTaskActivity :AppCompatActivity() {
 
         // Botão de adicionar tarefa
         binding.btCreateTask.setOnClickListener {
-            val replyIntent = Intent()
-            if (TextUtils.isEmpty(binding.inputTitle.text)) {
-                setResult(Activity.RESULT_CANCELED, replyIntent)
-            } else {
-                val extras = Bundle()
-                val title = binding.inputTitle.text.toString()
-                val description = binding.inputDescription.text.toString()
-                val date = binding.inputDate.text.toString()
-                val time = binding.inputTime.text.toString()
-                val completed = false
-                extras.putString(EXTRA_TITLE, title)
-                extras.putString(EXTRA_DESCRIPTION, description)
-                extras.putString(EXTRA_DATE, date)
-                extras.putString(EXTRA_TIME, time)
-                extras.putBoolean(EXTRA_COMPLETED, completed)
-                replyIntent.putExtras(extras)
-                setResult(Activity.RESULT_OK, replyIntent)
-            }
+            addNewItem()
+        }
+
+        binding.btEditTask.setOnClickListener {
+            taskViewModel.editTask(
+                task,
+                binding.inputTitle.text.toString(),
+                binding.inputDescription.text.toString(),
+                binding.inputDate.text.toString(),
+                binding.inputTime.text.toString()
+            )
             finish()
         }
 

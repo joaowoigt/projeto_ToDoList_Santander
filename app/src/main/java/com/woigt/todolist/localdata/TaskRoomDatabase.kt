@@ -18,12 +18,13 @@ import androidx.room.RoomDatabase
         fun getDatabase(context: Context): TaskRoomDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(context.applicationContext,
-                    TaskRoomDatabase::class.java, "task_database").build()
+                    TaskRoomDatabase::class.java, "task").build()
                 INSTANCE = instance
                 instance
             }
         }
     }
+
 
 
  }
