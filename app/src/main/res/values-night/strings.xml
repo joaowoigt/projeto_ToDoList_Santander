@@ -13,4 +13,7 @@
     <string name="detail">Detalhes</string>
     <string name="empty_state_text">Ops! Você não tem nenhuma tarefa</string>
     <string name="edit_task">Editar Tarefa</string>
+    <string name="agendar_tarefa">Agendar Tarefa</string>
+    <string name="calendar">Imagem Calendario</string>
+    <string name="clock">Imagem Relogio</string>
 </resources>

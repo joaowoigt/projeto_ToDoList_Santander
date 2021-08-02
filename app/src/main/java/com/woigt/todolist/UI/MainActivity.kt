@@ -20,16 +20,18 @@ import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_TIME
 import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_TITLE
 import com.woigt.todolist.viewmodel.TaskViewModel
 import com.woigt.todolist.viewmodel.TaskViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     private val taskViewModel: TaskViewModel by viewModels {
         TaskViewModelFactory((application as TaskApplication).database.taskDao())
     }
+
     private val newTaskActivityRequestCode = 1
-    private val detailTaskActivityRequestCode = 2
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,19 +39,19 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val recyclerView = findViewById<RecyclerView>(R.id.rv_tasks)
-        val adapter = TaskListAdapter{
+
+        val adapter = TaskListAdapter({
             val intent = Intent(this, DetailActivity::class.java)
             intent.putExtra("id", it.id)
-            startActivity(intent)
-        }
+            startActivity(intent) },taskViewModel)
+
+
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         taskViewModel.allTasks.observe(this, Observer { task ->
             task?.let { adapter.submitList(it) }})
-
 
         insertListeners()
     }
@@ -76,19 +78,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
-        binding.includeEmpty.btNewTodoEmpty.setOnClickListener {
-            startActivity(Intent(this, AddTaskActivity::class.java))
-        }
-
-
     }
-
-
-
-    companion object {
-        const val EXTRA_ID = 1000
-    }
-
 
 }

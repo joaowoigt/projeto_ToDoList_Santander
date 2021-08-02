@@ -5,45 +5,95 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/tv_detail_title"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        tools:text="Titulo"
-        android:textSize="36sp"
-        android:fontFamily="@font/roboto_bold"
-        android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="16dp"
+        android:elevation="16dp">
 
-    <TextView
-        android:id="@+id/tv_detail_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxHeight="300dp"
-        tools:text="Descrição"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_detail_title"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@drawable/shape">
+
+                <TextView
+                    android:id="@+id/tv_detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    tools:text="Titulo"
+                    android:textSize="32sp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_detail_description"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:maxHeight="300dp"
+                tools:text="Descrição"
+                android:textSize="18sp"
+                android:layout_margin="16dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+    <ImageView
+        android:id="@+id/iv_calendar"
+        android:layout_width="40dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_calendar_4"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintTop_toBottomOf="@id/card_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/calendar" />
 
     <TextView
         android:id="@+id/tv_detail_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="21/07"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_detail_description"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_margin="8dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@id/iv_calendar"
+        app:layout_constraintTop_toBottomOf="@id/card_detail"/>
+
+    <ImageView
+        android:id="@+id/iv_clock"
+        android:layout_width="40dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_access_time"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintTop_toBottomOf="@id/card_detail"
+        app:layout_constraintEnd_toStartOf="@id/tv_detail_time"
+        android:contentDescription="@string/clock" />
 
     <TextView
         android:id="@+id/tv_detail_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="18:00"
-        android:layout_margin="16dp"
-        app:layout_constraintStart_toEndOf="@id/tv_detail_date"
-        app:layout_constraintTop_toBottomOf="@id/tv_detail_description"/>
+        android:textSize="24sp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_detail" />
 
     <Button
         android:id="@+id/bt_delete"
@@ -68,12 +118,23 @@
 
        <Button
         android:id="@+id/bt_edit"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/edit"
         android:layout_marginHorizontal="16dp"
         app:layout_constraintBottom_toTopOf="@id/bt_delete"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/bt_schedule"
+           app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/bt_schedule"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/agendar_tarefa"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintBottom_toTopOf="@id/bt_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/bt_edit"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

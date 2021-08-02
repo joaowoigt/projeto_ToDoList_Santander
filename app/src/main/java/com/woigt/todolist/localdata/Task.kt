@@ -3,9 +3,7 @@ package com.woigt.todolist.localdata
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
-import java.io.Serializable
-import java.util.*
+
 
 
 @Entity(tableName = "task_table")

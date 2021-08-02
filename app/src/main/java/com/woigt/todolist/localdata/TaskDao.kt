@@ -1,6 +1,6 @@
 package com.woigt.todolist.localdata
 
-import android.content.ClipData
+
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -22,6 +22,12 @@ interface TaskDao {
 
     @Query("SELECT * from task_table WHERE id = :id")
     fun getItem(id: Int): Flow<Task>
+
+    @Query("UPDATE task_table SET completed = :completed WHERE id = :taskId")
+    suspend fun updateCompleted(taskId: Int, completed: Boolean)
+
+
+
 
 
 

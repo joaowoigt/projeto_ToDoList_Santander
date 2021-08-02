@@ -15,7 +15,6 @@ import com.woigt.todolist.localdata.Task
 import com.woigt.todolist.localdata.TaskApplication
 import com.woigt.todolist.viewmodel.TaskViewModel
 import com.woigt.todolist.viewmodel.TaskViewModelFactory
-
 import java.util.*
 
 class AddTaskActivity : AppCompatActivity() {
@@ -49,11 +48,9 @@ class AddTaskActivity : AppCompatActivity() {
                 bindEditTask(task)
                 binding.btCreateTask.visibility = View.GONE
                 binding.btEditTask.visibility = View.VISIBLE
-                binding.toolbar.title = "Editar Tarefa"
+                binding.tvTitle.text = "Editar Tarefa"
             })
         }
-
-
 
         insertListeners()
 
@@ -123,8 +120,7 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
         binding.btEditTask.setOnClickListener {
-            taskViewModel.editTask(
-                task,
+            taskViewModel.editTask(task,
                 binding.inputTitle.text.toString(),
                 binding.inputDescription.text.toString(),
                 binding.inputDate.text.toString(),
@@ -133,12 +129,12 @@ class AddTaskActivity : AppCompatActivity() {
             finish()
         }
 
+
     }
 
     companion object {
         const val DATE_PICKER_TAG = "DATE_PICKER_TAG"
         const val TIME_PICKER_TAG = "TIME_PICKER_TAG"
-        const val EXTRA_ID = "com.woigt.todolist.tasklistsql.ID"
         const val EXTRA_TITLE = "com.woigt.todolist.tasklistsql.TITLE"
         const val EXTRA_DESCRIPTION = "com.woigt.todolist.tasklistsql.DESCRIPTION"
         const val EXTRA_DATE = "com.woigt.todolist.tasklistsql.DATE"

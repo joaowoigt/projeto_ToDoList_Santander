@@ -2,7 +2,6 @@ package com.woigt.todolist.viewmodel
 
 import androidx.lifecycle.*
 import com.woigt.todolist.localdata.Task
-import com.woigt.todolist.localdata.TaskApplication
 import com.woigt.todolist.localdata.TaskDao
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
@@ -21,19 +20,17 @@ class TaskViewModel(private val taskDao: TaskDao): ViewModel() {
         return taskDao.getItem(id).asLiveData()
     }
 
-    private fun getNewTaskEntry(title: String, description: String,
-                                date: String, time: String) :Task {
+    private fun getNewTaskEntry(title: String, description: String, date: String, time: String)
+    :Task {
         return Task(title, description, date, time)
     }
 
-    fun addNewTask(title: String, description: String,
-                   date: String, time: String) {
+    fun addNewTask(title: String, description: String, date: String, time: String) {
         val newTask = getNewTaskEntry(title, description, date, time)
         insertTask(newTask)
     }
 
-    fun isEntryValid(title: String, description: String,
-                     date: String, time: String): Boolean {
+    fun isEntryValid(title: String, description: String, date: String, time: String): Boolean {
         if (title.isBlank() || description.isBlank() || date.isBlank() || time.isBlank()) {
             return false
         }
@@ -52,13 +49,16 @@ class TaskViewModel(private val taskDao: TaskDao): ViewModel() {
         }
     }
 
-    fun editTask(task: Task,title: String, description: String,
-                 date: String, time: String ) {
+    fun editTask(task: Task,title: String, description: String, date: String, time: String ) {
         val newTask = task.copy(title= title, description= description, date= date, time= time)
         updateItem(newTask)
     }
 
-
+    fun updateCompleted(taskId: Int, isCompleted: Boolean) {
+        viewModelScope.launch {
+            taskDao.updateCompleted(taskId, isCompleted)
+        }
+    }
 }
 
 class TaskViewModelFactory(private val taskDao: TaskDao): ViewModelProvider.Factory {

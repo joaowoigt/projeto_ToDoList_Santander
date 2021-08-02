@@ -1,32 +1,25 @@
 package com.woigt.todolist.ui
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
+
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.PopupMenu
+import android.widget.*
 import androidx.recyclerview.widget.ListAdapter
-import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.woigt.todolist.R
-import com.woigt.todolist.databinding.ItemTaskBinding
 import com.woigt.todolist.localdata.Task
-import com.woigt.todolist.model.TaskClickedListener
-import kotlin.coroutines.coroutineContext
+import com.woigt.todolist.viewmodel.TaskViewModel
 
-class TaskListAdapter(val onItemClicked: (Task) -> Unit) :
+class TaskListAdapter(val onItemClicked: (Task) -> Unit,
+                        val taskViewModel: TaskViewModel) :
     ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskComparator()) {
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
+        val view: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
         return TaskViewHolder(view)
     }
 
@@ -38,26 +31,48 @@ class TaskListAdapter(val onItemClicked: (Task) -> Unit) :
         holder.bind(current)
     }
 
-    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val taskTitle: TextView = itemView.findViewById(R.id.tv_task_title)
         private val taskDescription: TextView = itemView.findViewById(R.id.tv_task_description)
         private val taskDate: TextView = itemView.findViewById(R.id.tv_task_date)
         private val taskTime: TextView = itemView.findViewById(R.id.tv_task_time)
+        private val taskCheckBox: ImageButton = itemView.findViewById(R.id.checkbox)
 
 
-        fun bind( item: Task) {
+        fun bind(item: Task) {
             taskTitle.text = item.title
             taskDescription.text = item.description
             taskDate.text = item.date
             taskTime.text = item.time
 
+            setStyle(item)
+
+            this.taskCheckBox.setOnClickListener {
+                if (item.isCompleted == false) {
+                    taskViewModel.updateCompleted(item.id, true)
+                }else {
+                    taskViewModel.updateCompleted(item.id, false)
+                }
+            }
         }
 
+        private fun setStyle(item: Task) {
+            if (item.isCompleted == true) {
+                taskTitle.paintFlags = taskTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                taskDescription.paintFlags = taskDescription.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                taskDate.paintFlags = taskDate.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                taskTime.paintFlags = taskTime.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
-    }
+            } else {
+                taskTitle.paintFlags = taskTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                taskDescription.paintFlags =taskDescription.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                taskDate.paintFlags = taskDate.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                taskTime.paintFlags = taskTime.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+        }
     }
 
-    class TaskComparator : DiffUtil.ItemCallback<Task>(){
+    class TaskComparator : DiffUtil.ItemCallback<Task>() {
         override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
             return oldItem === newItem
         }
@@ -67,3 +82,4 @@ class TaskListAdapter(val onItemClicked: (Task) -> Unit) :
         }
 
     }
+}
