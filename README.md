@@ -16,22 +16,24 @@ ___
 
 Além do código base desenvolvido junto ao mentor do projeto, as minhas evoluções foram:
 
-> - Acredito que a adição mais importante a ser comentada é a implementação do **RoomDatabase**, com a intenção de garantir a persistência de dados no aplicativo. Isto traz maior utilidade para o aplicativo, uma vez que os dados das tarefas eram todos perdidos assim que  a aplicação original era destruída.
->   - Nesta implementação foi respeitada as diretrizes do MVVM. A seção de data é composta por:  **DataClass para representar o modelo das tarefas; Data Access Object(DAO) para acessar corretamente a tabela criada pelo database; RoomDatabase para inicializar o banco de dados local; Repository para fazer a conexão recomendada entre o banco de dados, o ViewModel e a UI; Application para instanciar tanto o repositório quanto o RoomDatabase**.
->   - Todas essas aplicações são adaptadas para trabalhar com os dados da DataClass das Tarefas do aplicativo, que consistem em: Título, Descrição, Data, Hora e Completa (que indica se a tarefa já foi encerrada ou não).
->   - O DAO implementa as seguintes manipulações do banco de dados:
->     - getTasks; insert; update; delete; getItem; updateCompleted;
+- Acredito que a adição mais importante a ser comentada é a implementação do **RoomDatabase**, com a intenção de garantir a persistência de dados no aplicativo. Isto traz maior utilidade para o aplicativo, uma vez que os dados das tarefas eram todos perdidos assim que  a aplicação original era destruída.
 
-> - Ainda na manipulação de dados, como já foi referenciado o Aplicativo trabalha com um **ViewModel** único que provê as informações para todas as páginas, tudo isso a fim de não bloquear a Thread principal. Dessa forma, junto com o repositório, o **TaskViewModel** garante o funcionamento correto e rápido da aplicação, trabalhando com o sistema de **Corroutines**.
+- Nesta implementação foi respeitada as diretrizes do MVVM. A seção de data é composta por:  **DataClass para representar o modelo das tarefas; Data Access Object(DAO) para acessar corretamente a tabela criada pelo database; RoomDatabase para inicializar o banco de dados local; Repository para fazer a conexão recomendada entre o banco de dados, o ViewModel e a UI; Application para instanciar tanto o repositório quanto o RoomDatabase**.
+  - Todas essas aplicações são adaptadas para trabalhar com os dados da DataClass das Tarefas do aplicativo, que consistem em: Título, Descrição, Data, Hora e Completa (que indica se a tarefa já foi encerrada ou não).
+  - O DAO implementa as seguintes manipulações do banco de dados:
+    - getTasks; insert; update; delete; getItem; updateCompleted;
 
-> - Todo o código respeita as divisões de boas práticas do **MVVM**. Criando a separação correta dos componentes e seguindo suas diretrizes de implementação.
+- Ainda na manipulação de dados, como já foi referenciado o Aplicativo trabalha com um **ViewModel** único que provê as informações para todas as páginas, tudo isso a fim de não bloquear a Thread principal. Dessa forma, junto com o repositório, o **TaskViewModel** garante o funcionamento correto e rápido da aplicação, trabalhando com o sistema de **Corroutines**.
 
-> - Para além do projeto original, foram adicionadas as seguintes funcionalidades:
->   - **Tela exclusiva** para mostrar maiores **detalhes** ao clicar na tarefa. Com Layout simples mas moderno, as informações são passadas mais claramente para o usuário, entregando uma experiência mais agradável e satisfatória;
->   - Desta tela, também, o usuário tem acesso a duas funcionalidades já existentes. **Excluir** atividade, que acrescentei um **diálogo de alerta** para evitar esbarradas acidentais no botão. E **editar tarefa**, que redireciona o usuário para a página de edição, depois de editada, retorna para a tela de detalhes;
->   - Ainda, o usuário pode optar por **agendar a tarefa criada no App na Agenda nativa do Android**. Dando a facilidade de já importar *Título* e *Descrição* da tarefa para a tela de criação de compromisso da Agenda. Tendo acesso a um sistema de notificações já integrado com seu email de preferência. 
->   - Na tela principal, onde são mostrada todas as tarefas registradas, o usuário tem a opção de **clicar no botão de :heavy_check_mark: para riscar suas tarefas**. Dando a sensação de missão cumprida no final do dia.
-> - Por último, mas não menos importante, foi projetado um Layout seguindo as **Regras de UX e do Material Design** para criar uma identidade própria para o aplicativo, carinhosamente denomidado de TuDu List!, em homenagem ao abrasileiramento da língua inglesa.
+- Todo o código respeita as divisões de boas práticas do **MVVM**. Criando a separação correta dos componentes e seguindo suas diretrizes de implementação.
+
+- Para além do projeto original, foram adicionadas as seguintes funcionalidades:
+  - **Tela exclusiva** para mostrar maiores **detalhes** ao clicar na tarefa. Com Layout simples mas moderno, as informações são passadas mais claramente para o usuário, entregando uma experiência mais agradável e satisfatória;
+  - Desta tela, também, o usuário tem acesso a duas funcionalidades já existentes. **Excluir** atividade, que acrescentei um **diálogo de alerta** para evitar esbarradas acidentais no botão. E **editar tarefa**, que redireciona o usuário para a página de edição, depois de editada, retorna para a tela de detalhes;
+  - Ainda, o usuário pode optar por **agendar a tarefa criada no App na Agenda nativa do Android**. Dando a facilidade de já importar *Título* e *Descrição* da tarefa para a tela de criação de compromisso da Agenda. Tendo acesso a um sistema de notificações já integrado com seu email de preferência. 
+  - Na tela principal, onde são mostrada todas as tarefas registradas, o usuário tem a opção de **clicar no botão de :heavy_check_mark: para riscar suas tarefas**. Dando a sensação de missão cumprida no final do dia.
+
+- Por último, mas não menos importante, foi projetado um Layout seguindo as **Regras de UX e do Material Design** para criar uma identidade própria para o aplicativo, carinhosamente denomidado de TuDu List!, em homenagem ao abrasileiramento da língua inglesa.
 
 ___
 
