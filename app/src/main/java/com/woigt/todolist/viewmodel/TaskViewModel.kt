@@ -1,25 +1,32 @@
 package com.woigt.todolist.viewmodel
 
 import androidx.lifecycle.*
-import com.woigt.todolist.localdata.Task
-import com.woigt.todolist.localdata.TaskDao
+import com.woigt.todolist.data.Task
+import com.woigt.todolist.data.source.TaskRepository
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
-class TaskViewModel(private val taskDao: TaskDao): ViewModel() {
+/**
+ * ViewModel used in all Activities
+ */
+class TaskViewModel(private val taskRepository: TaskRepository): ViewModel() {
 
-    val allTasks: LiveData<List<Task>> = taskDao.getTasks().asLiveData()
+    val allTasks: LiveData<List<Task>> = taskRepository.allTask
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
-            taskDao.insert(task)
+            taskRepository.insertTask(task)
         }
     }
 
-    fun retrieveTask(id: Int): LiveData<Task> {
-        return taskDao.getItem(id).asLiveData()
+     fun retrieveTask(id: Int?): LiveData<Task?> {
+            return taskRepository.retrieveTask(id)
     }
 
+    /**
+     * getNewTaskEntry, addNewTask an isEntryValid are auxiliaries functions to access insertTask,
+     * preventing null camps to reach de database
+     */
     private fun getNewTaskEntry(title: String, description: String, date: String, time: String)
     :Task {
         return Task(title, description, date, time)
@@ -39,13 +46,13 @@ class TaskViewModel(private val taskDao: TaskDao): ViewModel() {
 
      private fun updateItem(task: Task) {
         viewModelScope.launch {
-            taskDao.update(task)
+            taskRepository.updateItem(task)
         }
     }
 
     fun deleteTask(task: Task) {
         viewModelScope.launch {
-            taskDao.delete(task)
+            taskRepository.deleteTask(task)
         }
     }
 
@@ -56,18 +63,18 @@ class TaskViewModel(private val taskDao: TaskDao): ViewModel() {
 
     fun updateCompleted(taskId: Int, isCompleted: Boolean) {
         viewModelScope.launch {
-            taskDao.updateCompleted(taskId, isCompleted)
+            taskRepository.updateCompleted(taskId, isCompleted)
         }
     }
 }
 
-class TaskViewModelFactory(private val taskDao: TaskDao): ViewModelProvider.Factory {
+class TaskViewModelFactory(private val taskRepository: TaskRepository): ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TaskViewModel(taskDao) as T
+            return TaskViewModel(taskRepository) as T
         }
-        throw IllegalArgumentException("Unknown Viewmodel class.")
+        throw IllegalArgumentException("Unknown ViewModel class.")
     }
 
 }

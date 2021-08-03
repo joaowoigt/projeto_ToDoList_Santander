@@ -6,33 +6,36 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.woigt.todolist.R
 import com.woigt.todolist.databinding.ActivityMainBinding
-import com.woigt.todolist.localdata.Task
-import com.woigt.todolist.localdata.TaskApplication
-import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_COMPLETED
-import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_DATE
-import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_DESCRIPTION
-import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_TIME
-import com.woigt.todolist.ui.AddTaskActivity.Companion.EXTRA_TITLE
+import com.woigt.todolist.data.Task
+import com.woigt.todolist.data.source.local.TaskApplication
+import com.woigt.todolist.ui.tasks.AddEditTaskActivity
+import com.woigt.todolist.ui.tasks.AddEditTaskActivity.Companion.EXTRA_COMPLETED
+import com.woigt.todolist.ui.tasks.AddEditTaskActivity.Companion.EXTRA_DATE
+import com.woigt.todolist.ui.tasks.AddEditTaskActivity.Companion.EXTRA_DESCRIPTION
+import com.woigt.todolist.ui.tasks.AddEditTaskActivity.Companion.EXTRA_TIME
+import com.woigt.todolist.ui.tasks.AddEditTaskActivity.Companion.EXTRA_TITLE
+import com.woigt.todolist.ui.tasks.DetailActivity
+import com.woigt.todolist.ui.tasks.TaskListAdapter
 import com.woigt.todolist.viewmodel.TaskViewModel
 import com.woigt.todolist.viewmodel.TaskViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
-
+/**
+ * Main Activity for the todoapp
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     private val taskViewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory((application as TaskApplication).database.taskDao())
+        TaskViewModelFactory((application as TaskApplication).repository)
     }
 
     private val newTaskActivityRequestCode = 1
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        taskViewModel.allTasks.observe(this, Observer { task ->
+        taskViewModel.allTasks.observe(this, { task ->
             task?.let { adapter.submitList(it) }})
 
         insertListeners()
@@ -73,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun insertListeners() {
         binding.btNewTodo.setOnClickListener {
-            val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
+            val intent = Intent(this@MainActivity, AddEditTaskActivity::class.java)
             startActivityForResult(intent, newTaskActivityRequestCode)
 
         }

@@ -1,5 +1,6 @@
-package com.woigt.todolist.ui
+package com.woigt.todolist.ui.tasks
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,29 +10,39 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.woigt.todolist.databinding.ActivityAddTaskBinding
-import com.woigt.todolist.extensions.format
-import com.woigt.todolist.extensions.text
-import com.woigt.todolist.localdata.Task
-import com.woigt.todolist.localdata.TaskApplication
+import com.woigt.todolist.utils.format
+import com.woigt.todolist.utils.text
+import com.woigt.todolist.data.Task
+import com.woigt.todolist.data.source.local.TaskApplication
+import com.woigt.todolist.ui.MainActivity
 import com.woigt.todolist.viewmodel.TaskViewModel
 import com.woigt.todolist.viewmodel.TaskViewModelFactory
 import java.util.*
 
-class AddTaskActivity : AppCompatActivity() {
+/**
+ *  Activity for adding and editing tasks on the RoomDatabase and communicate to the MainActivity.
+ *  Users need to enter a task title, description, date and time.
+ */
+class AddEditTaskActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddTaskBinding
 
     private val taskViewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory((application as TaskApplication).database.taskDao())
+        TaskViewModelFactory((application as TaskApplication).repository)
     }
     lateinit var task: Task
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        /**
+         * Responsible for changing the add page to a edit page. Retrieve the values of the task and
+         * edit then.
+         */
         fun bindEditTask(task: Task) {
             binding.apply {
                 binding.inputTitle.text = task.title.toString()
@@ -43,8 +54,8 @@ class AddTaskActivity : AppCompatActivity() {
 
         if (intent.hasExtra("id")) {
             val id = intent.getIntExtra("id", 0)
-            taskViewModel.retrieveTask(id).observe(this, androidx.lifecycle.Observer {
-                selectedItem -> task = selectedItem
+            taskViewModel.retrieveTask(id).observe(this, {
+                selectedItem -> task = selectedItem!!
                 bindEditTask(task)
                 binding.btCreateTask.visibility = View.GONE
                 binding.btEditTask.visibility = View.VISIBLE
@@ -58,10 +69,10 @@ class AddTaskActivity : AppCompatActivity() {
 
     private fun isEntryValid(): Boolean {
         return taskViewModel.isEntryValid(
-            binding.inputTitle.text.toString(),
-            binding.inputDescription.text.toString(),
-            binding.inputDate.text.toString(),
-            binding.inputTime.text.toString()
+            binding.inputTitle.text,
+            binding.inputDescription.text,
+            binding.inputDate.text,
+            binding.inputTime.text,
         )
 
     }
@@ -69,10 +80,10 @@ class AddTaskActivity : AppCompatActivity() {
     private fun addNewItem() {
         if (isEntryValid()) {
             taskViewModel.addNewTask(
-                binding.inputTitle.text.toString(),
-                binding.inputDescription.text.toString(),
-                binding.inputDate.text.toString(),
-                binding.inputTime.text.toString()
+                binding.inputTitle.text,
+                binding.inputDescription.text,
+                binding.inputDate.text,
+                binding.inputTime.text
             )
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -80,7 +91,9 @@ class AddTaskActivity : AppCompatActivity() {
     }
 
     private fun insertListeners() {
-        // Escolher Data
+        /**
+         * Date picker based on material design
+         */
         binding.inputDate.editText?.setOnClickListener {
           val datePicker = MaterialDatePicker.Builder.datePicker().build()
 
@@ -90,9 +103,13 @@ class AddTaskActivity : AppCompatActivity() {
                binding.inputDate.text = Date(it + offset).format()
             }
             datePicker.show(supportFragmentManager, DATE_PICKER_TAG)
+
+
         }
 
-        // Escolher Horario
+        /**
+         * Time picker based on material design
+         */
         binding.inputTime.editText?.setOnClickListener {
             val timePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H)
                 .setHour(12).setMinute(45).setTitleText("Hora da tarefa").build()
@@ -109,22 +126,26 @@ class AddTaskActivity : AppCompatActivity() {
             }
             timePicker.show(supportFragmentManager, TIME_PICKER_TAG)
         }
-        //Botão de cancerlar
+        /**
+         * Cancel the activity
+         */
         binding.btCancel.setOnClickListener {
             finish()
         }
 
-        // Botão de adicionar tarefa
+        /**
+         * Add task
+         */
         binding.btCreateTask.setOnClickListener {
             addNewItem()
         }
 
         binding.btEditTask.setOnClickListener {
             taskViewModel.editTask(task,
-                binding.inputTitle.text.toString(),
-                binding.inputDescription.text.toString(),
-                binding.inputDate.text.toString(),
-                binding.inputTime.text.toString()
+                binding.inputTitle.text,
+                binding.inputDescription.text,
+                binding.inputDate.text,
+                binding.inputTime.text
             )
             finish()
         }
@@ -132,6 +153,9 @@ class AddTaskActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Keys for navigation
+     */
     companion object {
         const val DATE_PICKER_TAG = "DATE_PICKER_TAG"
         const val TIME_PICKER_TAG = "TIME_PICKER_TAG"

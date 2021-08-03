@@ -1,4 +1,4 @@
-package com.woigt.todolist.ui
+package com.woigt.todolist.ui.tasks
 
 
 import android.graphics.Paint
@@ -10,9 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.woigt.todolist.R
-import com.woigt.todolist.localdata.Task
+import com.woigt.todolist.data.Task
 import com.woigt.todolist.viewmodel.TaskViewModel
 
+/**
+ * Adapter for the task list on the MainActivity. Has a reference to the [TaskViewModel]
+ * to implement the setStyle with the correct behavior.
+ */
 class TaskListAdapter(val onItemClicked: (Task) -> Unit,
                         val taskViewModel: TaskViewModel) :
     ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskComparator()) {
@@ -36,7 +40,7 @@ class TaskListAdapter(val onItemClicked: (Task) -> Unit,
         private val taskDescription: TextView = itemView.findViewById(R.id.tv_task_description)
         private val taskDate: TextView = itemView.findViewById(R.id.tv_task_date)
         private val taskTime: TextView = itemView.findViewById(R.id.tv_task_time)
-        private val taskCheckBox: ImageButton = itemView.findViewById(R.id.checkbox)
+        private val taskButtonCheck: ImageButton = itemView.findViewById(R.id.checkbox)
 
 
         fun bind(item: Task) {
@@ -47,7 +51,7 @@ class TaskListAdapter(val onItemClicked: (Task) -> Unit,
 
             setStyle(item)
 
-            this.taskCheckBox.setOnClickListener {
+            this.taskButtonCheck.setOnClickListener {
                 if (item.isCompleted == false) {
                     taskViewModel.updateCompleted(item.id, true)
                 }else {
@@ -56,22 +60,30 @@ class TaskListAdapter(val onItemClicked: (Task) -> Unit,
             }
         }
 
+        /**
+         * Paint a line on the task to give de user the experience that it's done
+         */
         private fun setStyle(item: Task) {
             if (item.isCompleted == true) {
                 taskTitle.paintFlags = taskTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                taskDescription.paintFlags = taskDescription.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                taskDescription.paintFlags =
+                    taskDescription.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 taskDate.paintFlags = taskDate.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 taskTime.paintFlags = taskTime.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
             } else {
                 taskTitle.paintFlags = taskTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                taskDescription.paintFlags =taskDescription.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                taskDescription.paintFlags =
+                    taskDescription.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 taskDate.paintFlags = taskDate.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 taskTime.paintFlags = taskTime.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
         }
     }
 
+    /**
+     * Callback for calculation the diff between two non-null items in a list.
+     */
     class TaskComparator : DiffUtil.ItemCallback<Task>() {
         override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
             return oldItem === newItem

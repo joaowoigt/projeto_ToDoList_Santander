@@ -1,8 +1,12 @@
-package com.woigt.todolist.extensions
+package com.woigt.todolist.utils
 
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.*
+
+/**
+ * Some functions to help a clean coding
+ */
 
 private val locale = Locale("pt", "BR")
 

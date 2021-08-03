@@ -17,4 +17,5 @@
     <string name="agendar_tarefa">Agendar Tarefa</string>
     <string name="calendar">Imagem Calendario</string>
     <string name="clock">Imagem Relogio</string>
+    <string name="alertdialog"> Deseja mesmo excluir esta tarefa?</string>
 </resources>
