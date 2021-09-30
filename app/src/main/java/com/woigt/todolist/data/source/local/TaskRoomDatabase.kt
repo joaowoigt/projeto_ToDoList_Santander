@@ -27,7 +27,4 @@ import com.woigt.todolist.data.Task
             }
         }
     }
-
-
-
  }

@@ -1,81 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+   <data>
+       <import type="android.view.View" />
+       <variable
+           name="task"
+           type="com.woigt.todolist.data.Task" />
+       <variable
+           name="onTaskClicked"
+           type="android.view.View.OnClickListener" />
+   </data>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        app:shapeAppearance="@font/roboto"
-        app:cardCornerRadius="8dp">
+        android:layout_margin="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/card_border"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:padding="8dp"
+            app:shapeAppearance="@font/roboto"
+            app:cardCornerRadius="8dp">
 
-            <TextView
-                android:id="@+id/tv_task_title"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/card_border"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@id/card_border"
-                app:layout_constraintTop_toTopOf="@id/card_border"
-                tools:text="Lavar" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_task_description"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="12sp"
-                tools:text="Lavar a louça do jantar talvez caiba mais coisas aqui vamo ver"
-                app:layout_constraintTop_toBottomOf="@id/tv_task_title"
-                app:layout_constraintStart_toStartOf="@id/card_border"
-                app:layout_constraintEnd_toStartOf="@id/checkbox"/>
+                <TextView
+                    android:id="@+id/tv_task_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:text="@{task.title}"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@id/card_border"
+                    app:layout_constraintTop_toTopOf="@id/card_border"
+                    tools:text="Lavar" />
 
-            <TextView
-                android:id="@+id/tv_task_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="25/05/2021"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/tv_task_description"
-                app:layout_constraintStart_toStartOf="@id/card_border"/>
+                <TextView
+                    android:id="@+id/tv_task_description"
+                    android:layout_width="0dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
+                    android:text="@{task.description}"
+                    tools:text="Lavar a louça do jantar talvez caiba mais coisas aqui vamo ver"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_title"
+                    app:layout_constraintStart_toStartOf="@id/card_border"
+                    app:layout_constraintEnd_toStartOf="@id/checkbox"/>
 
-            <TextView
-                android:id="@+id/tv_task_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                tools:text="14:00"
-                app:layout_constraintTop_toBottomOf="@id/tv_task_description"
-                app:layout_constraintStart_toEndOf="@id/tv_task_date"/>
+                <TextView
+                    android:id="@+id/tv_task_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="25/05/2021"
+                    android:text="@{task.date}"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_description"
+                    app:layout_constraintStart_toStartOf="@id/card_border"/>
 
-            <ImageButton
-                android:id="@+id/checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_check_24"
-                android:backgroundTint="@android:color/transparent"
-                app:layout_constraintTop_toTopOf="@id/card_border"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/card_border"
-                android:contentDescription="Botão de Check" />
+                <TextView
+                    android:id="@+id/tv_task_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@{task.time}"
+                    tools:text="14:00"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_description"
+                    app:layout_constraintStart_toEndOf="@id/tv_task_date"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageButton
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_check_24"
+                    android:backgroundTint="@android:color/transparent"
+                    app:layout_constraintTop_toTopOf="@id/card_border"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/card_border"
+                    android:contentDescription="Botão de Check" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

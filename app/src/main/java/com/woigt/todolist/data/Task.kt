@@ -15,10 +15,10 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "task_table")
 data class Task @JvmOverloads constructor (
-    @ColumnInfo(name = "title") val title: String? = "",
-    @ColumnInfo(name = "description") val description: String? = "",
-    @ColumnInfo(name = "date") val date: String? = "",
-    @ColumnInfo(name = "time") val time: String? = "",
-    @ColumnInfo(name= "completed") val isCompleted: Boolean? = false,
+    @ColumnInfo(name = "title") var title: String? = "",
+    @ColumnInfo(name = "description") var description: String? = "",
+    @ColumnInfo(name = "date") var date: String? = "",
+    @ColumnInfo(name = "time") var time: String? = "",
+    @ColumnInfo(name= "completed") var isCompleted: Boolean? = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 )

@@ -1,19 +1,21 @@
 package com.woigt.todolist.viewmodel
 
-import androidx.lifecycle.*
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.woigt.todolist.data.Task
 import com.woigt.todolist.data.source.TaskRepository
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 
 /**
  * ViewModel used in all Activities
  */
-class TaskViewModel(private val taskRepository: TaskRepository): ViewModel() {
+class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
 
     val allTasks: LiveData<List<Task>> = taskRepository.allTask
 
-    fun insertTask(task: Task) {
+    private fun insertTask(task: Task) {
         viewModelScope.launch {
             taskRepository.insertTask(task)
         }
@@ -38,7 +40,7 @@ class TaskViewModel(private val taskRepository: TaskRepository): ViewModel() {
     }
 
     fun isEntryValid(title: String, description: String, date: String, time: String): Boolean {
-        if (title.isBlank() || description.isBlank() || date.isBlank() || time.isBlank()) {
+        if (title.isBlank()  || description.isBlank() || date.isBlank() || time.isBlank() ) {
             return false
         }
         return true
@@ -66,15 +68,4 @@ class TaskViewModel(private val taskRepository: TaskRepository): ViewModel() {
             taskRepository.updateCompleted(taskId, isCompleted)
         }
     }
-}
-
-class TaskViewModelFactory(private val taskRepository: TaskRepository): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return TaskViewModel(taskRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class.")
-    }
-
 }

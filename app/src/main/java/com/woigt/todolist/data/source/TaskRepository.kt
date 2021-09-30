@@ -34,11 +34,4 @@ class TaskRepository(private val taskDao: TaskDao) {
         taskDao.updateCompleted(taskId, isCompleted)
     }
 
-
-
-
 }
-
-
-
-
